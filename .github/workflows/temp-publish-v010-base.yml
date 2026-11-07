@@ -1,0 +1,30 @@
+# TEMPORARY workflow: publishes the v0.1.0-base draft release with the
+# sm64coopdx-windows artifact attached. Delete this file after it runs.
+name: Temp publish v0.1.0-base release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows artifact zip from run 42397183472
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ARTIFACT_ID=$(gh api repos/dembenski/perfect-dark-64/actions/runs/42397183472/artifacts --jq '.artifacts[] | select(.name=="sm64coopdx-windows") | .id')
+          echo "artifact id: $ARTIFACT_ID"
+          curl -L -H "Authorization: Bearer $GH_TOKEN" -o sm64coopdx-windows.zip "https://api.github.com/repos/dembenski/perfect-dark-64/actions/artifacts/$ARTIFACT_ID/zip"
+          ls -lh sm64coopdx-windows.zip
+          unzip -l sm64coopdx-windows.zip | head -30
+      - name: Attach zip to draft release and publish it
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release upload v0.1.0-base sm64coopdx-windows.zip --clobber
+          gh release edit v0.1.0-base --draft=false
+          gh release view v0.1.0-base
