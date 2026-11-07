@@ -13,6 +13,7 @@ jobs:
       - name: Download Windows artifact zip from run 42397183472
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: dembenski/perfect-dark-64
         run: |
           set -euo pipefail
           ARTIFACT_ID=$(gh api repos/dembenski/perfect-dark-64/actions/runs/42397183472/artifacts --jq '.artifacts[] | select(.name=="sm64coopdx-windows") | .id')
@@ -23,6 +24,7 @@ jobs:
       - name: Attach zip to draft release and publish it
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: dembenski/perfect-dark-64
         run: |
           set -euo pipefail
           gh release upload v0.1.0-base sm64coopdx-windows.zip --clobber
