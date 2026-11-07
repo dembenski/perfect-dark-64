@@ -1,3 +1,9 @@
+# Perfect Dark 64 (PC)
+
+Perfect Dark characters and weapons inside Mario 64, on PC — a fan-made mod built on the [sm64coopdx](https://github.com/coop-deluxe/sm64coopdx) engine. Joanna Dark playable, PD weapons, dataDyne soldiers, stars stay the goal.
+
+**Legal / how to play:** this repo contains code only — no Nintendo or Rare/Microsoft game files. To build and play, you need your own legally-dumped Super Mario 64 (US) ROM, placed in the repo root as `baserom.us.z64`; the build script extracts the assets from your ROM. A Perfect Dark US v1.1 ROM is needed only if you use PD assets. This is an unofficial fan project, not affiliated with or endorsed by Nintendo, Rare, or Microsoft.
+
 ![sm64coopdx Logo](textures/segment2/custom_coopdx_logo.rgba32.png)
 
 sm64coopdx is an online multiplayer project for the Super Mario 64 PC port that synchronizes all entities and every level for multiple players. The project was started by the Coop Deluxe Team. The purpose is to actively maintain and improve, but also continue sm64ex-coop, created by djoslin0. More features, customization, and power to the Lua API allow modders and players to enjoy Super Mario 64 more than ever!
