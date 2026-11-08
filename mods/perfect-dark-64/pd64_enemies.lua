@@ -15,7 +15,7 @@ local function bhv_pd_soldier_init(obj)
     obj.oPosY = floor
     obj.oMoveFlags = obj.oMoveFlags | OBJ_MOVE_ON_GROUND
     -- TUNE: swap the model for the dataDyne soldier DynOS model when it exists.
-    -- obj.oAnimations = gObjectAnimations.<soldier anims>
+    obj.oAnimations = gObjectAnimations.goomba_seg8_anims_0801DA4C
     obj.oHomeX, obj.oHomeY, obj.oHomeZ = obj.oPosX, obj.oPosY, obj.oPosZ
     obj.oWallHitboxRadius = 40.0
     obj.oGravity = -4.0
