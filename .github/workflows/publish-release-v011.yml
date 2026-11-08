@@ -1,0 +1,53 @@
+# Publish Perfect Dark 64 v0.1.1 release (temporary — DELETE after the release is live)
+name: Publish Perfect Dark 64 v0.1.1 release (temporary)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: dembenski/perfect-dark-64
+        run: |
+          gh api repos/dembenski/perfect-dark-64/actions/runs/42503736981/artifacts --jq '.artifacts[] | "\(.id) \(.name) expired=\(.expired)"'
+          ARTIFACT_ID=$(gh api repos/dembenski/perfect-dark-64/actions/runs/42503736981/artifacts --jq '.artifacts[] | select(.name=="sm64coopdx-windows") | .id')
+          test -n "$ARTIFACT_ID"
+          echo "Artifact ID: $ARTIFACT_ID"
+          gh api repos/dembenski/perfect-dark-64/actions/artifacts/${ARTIFACT_ID}/zip > artifact.zip
+          ls -lh artifact.zip
+          mkdir -p artifact
+          unzip -o artifact.zip -d artifact
+          ls -lhR artifact
+      - name: Repack release zip
+        run: |
+          ls -lh artifact/
+          cp artifact/sm64coopdx_Windows.zip ./sm64coopdx-windows.zip
+          ls -lh sm64coopdx-windows.zip
+          unzip -l sm64coopdx-windows.zip | grep -E "sm64coopdx.exe|perfect-dark-64" | head -5
+      - name: Create and publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.1
+          target_commitish: main
+          name: Perfect Dark 64 v0.1.1 — Joanna lookup fix
+          body: |
+            Perfect Dark 64 v0.1.1 — Perfect Dark characters and weapons in Mario 64, on PC (sm64coopdx Lua mod).
+
+            FIXED IN v0.1.1: the mod no longer looks up the Joanna Dark model at load time — the model does not exist yet, and the lookup threw "Could not find model: joanna_geo" as a script error every time the mod was turned on. Joanna stays Mario until her DynOS model is built in Blender.
+
+            WHAT WORKS: Falcon 2 fires (B), C-buttons switch weapons, hold Z to aim, R reloads. Goombas are dataDyne soldiers (4 body shots / 2 headshots). All 43 weapons are in the data table; special behaviours land weapon by weapon.
+
+            BRING YOUR OWN SM64 ROM — no games are included. Unzip twice (the download is a zip inside a zip), then run sm64coopdx.exe --backend directx (fixes "fragment shader compilation failed" on old Intel GPUs). The game asks for your own SM64 ROM on first launch.
+
+            Unofficial fan project, not affiliated with Nintendo, Rare, or Microsoft.
+          files: sm64coopdx-windows.zip
+          draft: false
+          prerelease: false
