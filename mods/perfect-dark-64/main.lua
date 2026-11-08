@@ -27,6 +27,11 @@ function pd64_mario_update(m)
     if wantAim ~= s.aiming then
         s.aiming = wantAim
         set_first_person_enabled(wantAim)
+        -- Let the mod drive the camera while aiming: the engine skips its own
+        -- yaw/pitch updates while these are true. pcall: harmless if a future
+        -- engine build ever drops the fields.
+        pcall(function() gFirstPersonCamera.forceYaw = wantAim end)
+        pcall(function() gFirstPersonCamera.forcePitch = wantAim end)
         if wantAim and (w.scope or w.id == 3 or w.id == 20 or w.id == 21 or w.id == 26) then
             gFirstPersonCamera.fov = 30 -- scoped zoom (TUNE: verify fov field range in-game)
         elseif wantAim then
