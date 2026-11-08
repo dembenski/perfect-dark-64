@@ -1,11 +1,12 @@
 -- Joanna Dark as the playable character: a DynOS model swap, same pattern as
 -- the bundled koopa-player-model example. Model file must exist first:
 --   mods/perfect-dark-64/actors/joanna_geo/  (built in Blender, DynOS format)
--- Until the model exists, this file is a no-op (guarded by the nil check).
+-- Until the model exists, this file is a no-op. Do NOT call
+-- smlua_model_util_get_id("joanna_geo") yet: a missing model THROWS
+-- "Could not find model", and the engine prints the script error even
+-- inside pcall. Re-enable the lookup once the model is built.
 
 local E_MODEL_JOANNA = nil
-local ok, id = pcall(smlua_model_util_get_id, "joanna_geo")
-if ok and id ~= nil then E_MODEL_JOANNA = id end
 
 local function pd64_joanna_update(m)
     if E_MODEL_JOANNA == nil then return end
