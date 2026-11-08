@@ -1,0 +1,62 @@
+# Publish Perfect Dark 64 v0.1.2 release (temporary — DELETE after the release is live)
+name: Publish Perfect Dark 64 v0.1.2 release (temporary)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: dembenski/perfect-dark-64
+        run: |
+          gh api repos/dembenski/perfect-dark-64/actions/runs/42509476530/artifacts --jq '.artifacts[] | "\(.id) \(.name) expired=\(.expired)"'
+          ARTIFACT_ID=$(gh api repos/dembenski/perfect-dark-64/actions/runs/42509476530/artifacts --jq '.artifacts[] | select(.name=="sm64coopdx-windows") | .id')
+          test -n "$ARTIFACT_ID"
+          echo "Artifact ID: $ARTIFACT_ID"
+          gh api repos/dembenski/perfect-dark-64/actions/artifacts/${ARTIFACT_ID}/zip > artifact.zip
+          ls -lh artifact.zip
+          mkdir -p artifact
+          unzip -o artifact.zip -d artifact
+          ls -lhR artifact
+      - name: Repack release zip (flat — game files directly inside)
+        run: |
+          ls -lh artifact/
+          mkdir -p game
+          unzip -o artifact/sm64coopdx_Windows.zip -d game
+          ls game/ | head
+          test -f game/sm64coopdx.exe
+          test -d game/mods/perfect-dark-64
+          cd game
+          zip -r ../sm64coopdx-windows.zip .
+          cd ..
+          ls -lh sm64coopdx-windows.zip
+          unzip -l sm64coopdx-windows.zip | grep -E "sm64coopdx.exe|perfect-dark-64" | head -5
+      - name: Create and publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.2
+          target_commitish: main
+          name: Perfect Dark 64 v0.1.2 — Keyboard aim
+          body: |
+            Perfect Dark 64 v0.1.2 — Perfect Dark characters and weapons in Mario 64, on PC (sm64coopdx Lua mod).
+
+            NEW IN v0.1.2: keyboard aim. Hold Z to aim, then look around with the C-buttons or the D-pad (left/right turn, up/down look). The mouse also turns the first-person camera. The crosshair stays glued to the middle of the screen like a real shooter — you aim by turning the view. When you're not aiming, C-buttons / D-pad switch weapons as before.
+
+            FIXED IN v0.1.1: the mod no longer looks up the Joanna Dark model at load time (it threw "Could not find model: joanna_geo"); tracer + FarSight screen-position calls fixed; soldiers walk with Goomba animations.
+
+            WHAT WORKS: Falcon 2 fires (B), C-buttons switch weapons, hold Z to aim, R reloads. Goombas are dataDyne soldiers (4 body shots / 2 headshots). All 43 weapons are in the data table; special behaviours land weapon by weapon.
+
+            BRING YOUR OWN SM64 ROM — no games are included. Unzip once, then run sm64coopdx.exe --backend directx (fixes "fragment shader compilation failed" on old Intel GPUs). The game asks for your own SM64 ROM on first launch.
+
+            Unofficial fan project, not affiliated with Nintendo, Rare, or Microsoft.
+          files: sm64coopdx-windows.zip
+          draft: false
+          prerelease: false
