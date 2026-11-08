@@ -36,11 +36,35 @@ function pd64_mario_update(m)
         end
     end
 
-    -- C-buttons / D-pad switch weapons.
-    if (m.controller.buttonPressed & R_CBUTTONS) ~= 0 or (m.controller.buttonPressed & D_JPAD) ~= 0 then
-        pd64_switch_weapon(m, s, 1)
-    elseif (m.controller.buttonPressed & L_CBUTTONS) ~= 0 or (m.controller.buttonPressed & U_JPAD) ~= 0 then
-        pd64_switch_weapon(m, s, -1)
+    -- While aiming, C-buttons / D-pad LOOK around (keyboard aim). The mouse
+    -- also turns the first-person camera natively. The crosshair itself never
+    -- moves — it stays glued to the middle of the screen like a real shooter;
+    -- you aim by turning the view, and the crosshair (and your shots) follow it.
+    -- Angles are SM64 units (0x8000 = 180 degrees).
+    if s.aiming then
+        local lookRate = 0x200 -- ~2.8 degrees per frame (TUNE)
+        if (m.controller.buttonDown & R_CBUTTONS) ~= 0 or (m.controller.buttonDown & R_JPAD) ~= 0 then
+            gFirstPersonCamera.yaw = gFirstPersonCamera.yaw - lookRate -- turn right
+        end
+        if (m.controller.buttonDown & L_CBUTTONS) ~= 0 or (m.controller.buttonDown & L_JPAD) ~= 0 then
+            gFirstPersonCamera.yaw = gFirstPersonCamera.yaw + lookRate -- turn left
+        end
+        if (m.controller.buttonDown & U_CBUTTONS) ~= 0 or (m.controller.buttonDown & U_JPAD) ~= 0 then
+            gFirstPersonCamera.pitch = math.min(gFirstPersonCamera.pitch + lookRate, 0x3000) -- look up
+        end
+        if (m.controller.buttonDown & D_CBUTTONS) ~= 0 or (m.controller.buttonDown & D_JPAD) ~= 0 then
+            gFirstPersonCamera.pitch = math.max(gFirstPersonCamera.pitch - lookRate, -0x3000) -- look down
+        end
+    end
+
+    -- C-buttons / D-pad switch weapons — only when NOT aiming, because while
+    -- aiming the same buttons look around instead.
+    if not s.aiming then
+        if (m.controller.buttonPressed & R_CBUTTONS) ~= 0 or (m.controller.buttonPressed & D_JPAD) ~= 0 then
+            pd64_switch_weapon(m, s, 1)
+        elseif (m.controller.buttonPressed & L_CBUTTONS) ~= 0 or (m.controller.buttonPressed & U_JPAD) ~= 0 then
+            pd64_switch_weapon(m, s, -1)
+        end
     end
 
     -- R = manual reload.
