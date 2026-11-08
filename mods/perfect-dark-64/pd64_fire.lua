@@ -45,7 +45,7 @@ function pd64_fire(m, s, w)
     local wallDist = w.range
     if w.id ~= 21 then -- 21 = FarSight XR-20
         local hit = collision_find_surface_on_ray(ox, oy, oz, dx, dy, dz, 10.0)
-        if hit ~= nil and hit.hitPos ~= nil then
+        if hit ~= nil and hit.surface ~= nil and hit.hitPos ~= nil then
             wallDist = math.sqrt((hit.hitPos.x - ox) ^ 2 + (hit.hitPos.y - oy) ^ 2 + (hit.hitPos.z - oz) ^ 2)
         end
     end
