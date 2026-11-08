@@ -28,7 +28,8 @@ local function pd64_hud()
 
     -- Tracer line: screen-center to hit point, 3 frames after each shot.
     if s.tracerTimer > 0 and s.tracerFrom ~= nil and s.tracerTo ~= nil then
-        local ok, sp = djui_hud_world_pos_to_screen_pos(s.tracerTo, { x = 0, y = 0, z = 0 })
+        local sp = { x = 0, y = 0, z = 0 }
+        local ok = djui_hud_world_pos_to_screen_pos(s.tracerTo, sp)
         if ok then
             djui_hud_set_color(255, 220, 100, 255)
             djui_hud_render_line(160, 120, sp.x, sp.y, 2)
@@ -39,8 +40,9 @@ local function pd64_hud()
     if s.weapon == 21 and SOLDIER_BEHAVIOR ~= nil then
         local obj = obj_get_first_with_behavior_id(SOLDIER_BEHAVIOR)
         while obj ~= nil do
-            local ok, sp = djui_hud_world_pos_to_screen_pos(
-                { x = obj.oPosX, y = obj.oPosY + 150, z = obj.oPosZ }, { x = 0, y = 0, z = 0 })
+            local sp = { x = 0, y = 0, z = 0 }
+            local ok = djui_hud_world_pos_to_screen_pos(
+                { x = obj.oPosX, y = obj.oPosY + 150, z = obj.oPosZ }, sp)
             if ok then
                 djui_hud_set_text_color(255, 60, 60, 255)
                 djui_hud_print_text("<>", sp.x - 6, sp.y - 6, 1.0, 1.0)
