@@ -103,16 +103,25 @@ function pd64_start_reload(m, s)
     local w = pd64_current_weapon(s)
     if s.reloadTimer > 0 then return end
     if s.mag[w.id] >= w.magSize then return end
-    if (s.reserve[w.pool] or 0) <= 0 then return end
-    s.reloadTimer = w.reloadTime or 60 -- frames; ~1s default (TUNE per weapon)
+    -- Pool-less weapons (Combat Knife, Laser, Unarmed) carry no reserve:
+    -- reload them from nothing instead of blocking on an empty pool.
+    if w.pool ~= "none" and (s.reserve[w.pool] or 0) <= 0 then return end
+    -- reloadTime 0 (Knife/Laser/Grenade/mines/N-Bomb) used to set a 0-frame
+    -- timer that never ticked, so those weapons could never reload. 1 frame
+    -- still runs finish_reload on the next update.
+    s.reloadTimer = (w.reloadTime and w.reloadTime > 0) and w.reloadTime or 1
     play_sound(SOUND_GENERAL_COIN, m.pos) -- placeholder click; replace with a reload sample
 end
 
 function pd64_finish_reload(s)
     local w = pd64_current_weapon(s)
-    local need = w.magSize - s.mag[w.id]
-    local take = math.min(need, s.reserve[w.pool] or 0)
-    s.mag[w.id] = s.mag[w.id] + take
-    s.reserve[w.pool] = s.reserve[w.pool] - take
+    if w.pool == "none" then
+        s.mag[w.id] = w.magSize -- no reserve to draw from
+    else
+        local need = w.magSize - s.mag[w.id]
+        local take = math.min(need, s.reserve[w.pool] or 0)
+        s.mag[w.id] = s.mag[w.id] + take
+        s.reserve[w.pool] = s.reserve[w.pool] - take
+    end
     s.reloadTimer = 0
 end

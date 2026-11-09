@@ -55,10 +55,12 @@ function pd64_mario_update(m)
             gFirstPersonCamera.yaw = gFirstPersonCamera.yaw + lookRate -- turn left
         end
         if (m.controller.buttonDown & U_CBUTTONS) ~= 0 or (m.controller.buttonDown & U_JPAD) ~= 0 then
-            gFirstPersonCamera.pitch = math.min(gFirstPersonCamera.pitch + lookRate, 0x3000) -- look up
+            -- Engine: negative pitch = looking up (focus.y = pos.y - 100*sin(pitch)),
+            -- so looking up DECREASES pitch. v0.1.2 had this backwards.
+            gFirstPersonCamera.pitch = math.max(gFirstPersonCamera.pitch - lookRate, -0x3000) -- look up
         end
         if (m.controller.buttonDown & D_CBUTTONS) ~= 0 or (m.controller.buttonDown & D_JPAD) ~= 0 then
-            gFirstPersonCamera.pitch = math.max(gFirstPersonCamera.pitch - lookRate, -0x3000) -- look down
+            gFirstPersonCamera.pitch = math.min(gFirstPersonCamera.pitch + lookRate, 0x3000) -- look down
         end
     end
 
@@ -83,7 +85,7 @@ function pd64_mario_update(m)
         firing = (m.controller.buttonPressed & B_BUTTON) ~= 0
     end
     if firing and s.reloadTimer == 0 and s.cooldown <= 0 then
-        if s.mag[w.id] > 0 then
+        if w.magSize == 0 or s.mag[w.id] > 0 then -- Unarmed (magSize 0) has no ammo to spend
             pd64_fire(m, s, w)
         else
             play_sound(SOUND_GENERAL2_BOBOMB_EXPLOSION, m.pos) -- dry click placeholder (TUNE: use a click sample)

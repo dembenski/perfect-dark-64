@@ -14,8 +14,14 @@ local function pd64_ray(m, s, w)
     local oz = m.pos.z
     local yaw, pitch
     if s.aiming then
-        yaw = gFirstPersonCamera.yaw
-        pitch = gFirstPersonCamera.pitch
+        -- The first-person camera stores yaw as Mario's facing yaw + 0x8000
+        -- (src/game/first_person_cam.c) and looks along MINUS its
+        -- (sin yaw, sin pitch, cos yaw) — focus = pos - 100 * that vector.
+        -- Using the camera yaw/pitch raw made every aimed shot fly exactly
+        -- 180 degrees backwards, behind Mario. Subtract 0x8000 and negate
+        -- the pitch so the ray matches where the camera actually looks.
+        yaw = gFirstPersonCamera.yaw - 0x8000
+        pitch = -gFirstPersonCamera.pitch
     else
         yaw = m.faceAngle.y
         pitch = 0
@@ -91,7 +97,7 @@ function pd64_fire(m, s, w)
     else
         play_sound(SOUND_ACTION_TERRAIN_JUMP, m.pos) -- placeholder pop (replace!)
     end
-    s.mag[w.id] = s.mag[w.id] - 1
+    if w.magSize > 0 then s.mag[w.id] = s.mag[w.id] - 1 end -- Unarmed (magSize 0) spends no ammo
     s.cooldown = w.fireInterval
 end
 
