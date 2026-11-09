@@ -8,6 +8,7 @@ require("pd64_fire")    -- hitscan ray, cone check, damage, tracers
 require("pd64_hud")     -- crosshair, ammo counter, weapon name
 require("pd64_enemies") -- dataDyne soldier behavior (Goomba replacement)
 require("pd64_joanna")  -- Joanna Dark player model swap
+require("pd64_gun")     -- Falcon 2 viewmodel (DynOS gun in Mario's hand)
 
 function pd64_mario_update(m)
     if m.playerIndex ~= 0 then return end -- local player only for input
@@ -92,6 +93,9 @@ function pd64_mario_update(m)
             pd64_start_reload(m, s)
         end
     end
+
+    -- Falcon 2 viewmodel follows Mario's hand (no-op until the actor exists).
+    pd64_gun_update(m, s)
 end
 
 hook_event(HOOK_MARIO_UPDATE, pd64_mario_update)
