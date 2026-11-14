@@ -1,3 +1,28 @@
+# Perfect Dark 64 by Michael Dembenski & Bit
+
+Perfect Dark characters and weapons inside Mario 64, on PC. Joanna Dark playable, PD weapons, dataDyne soldiers, stars stay the goal.
+
+- **Play it:** https://8bitvapor.itch.io/perfect-dark-64
+- **Games Hub:** https://dembenski.github.io/games/
+
+## Find Michael & Bit everywhere
+
+- 🎮 [Share My Games](https://dembenski.github.io/games/all-games.html) — the 1,092-game SHARE MY GAME directory
+- 📸 [Instagram — @8bitvapor.builds](https://www.instagram.com/8bitvapor.builds/)
+- 📘 [Facebook](https://www.facebook.com/Dembenski.M)
+- 📺 [YouTube — @8bitvapor](https://www.youtube.com/@8bitvapor)
+- 🎵 [TikTok — @8bitvapor](https://www.tiktok.com/@8bitvapor)
+- 🕹️ [itch.io](https://8bitvapor.itch.io/)
+- 💻 [CodePen](https://codepen.io/Michael-Dembenski)
+- 🐙 [GitHub](https://github.com/dembenski)
+- 💼 [Contra](https://contra.com/michael_dembenski_vi99zv4l/about)
+- 🌐 [Horizon Worlds profile](https://horizon.meta.com/profile/8bitvap0r/)
+- 🎮 [Games Hub](https://dembenski.github.io/games/)
+
+---
+
+*The original sm64coopdx README follows below.*
+
 # Perfect Dark 64 (PC)
 
 Perfect Dark characters and weapons inside Mario 64, on PC — a fan-made mod built on the [sm64coopdx](https://github.com/coop-deluxe/sm64coopdx) engine. Joanna Dark playable, PD weapons, dataDyne soldiers, stars stay the goal.
